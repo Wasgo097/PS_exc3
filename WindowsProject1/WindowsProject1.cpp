@@ -343,36 +343,29 @@ static void DefSzescian_(float obrot)
 // procedura podstawowego modelowania graficznego w scenie:
 void Modelowanie(void)
 {
-	glPushMatrix(); // zapamietanie globalnej macierzy dla p/w transformacji model-widok
-	{               // zdefiniowanie obroconych figur w srodku sceny i ich lokalne przemiszczanie poprzez dolaczenie macierzy przesuniecia do p/w transformacji
-	/*	glTranslatef(5.0f, 0.0f, 0.0f);
-		DefSzescian_(ruch.kat1);
-		glTranslatef(-10.0f, 0.0f, 0.0f);
-		DefSzescian_(ruch.kat2);
-		glTranslatef(5.0f, 5.0f, -5.0f);
-		DefSzescian_(ruch.kat3);
-		glTranslatef(5.0f, 5.0f, -50.0f);
-		DefSzescian_(ruch.kat3);*/
-	}
-	glPopMatrix();              // zresetowanie p/w transformacji model-widok do macierzy globalnej
-	glScalef(2.0f, 2.0f, 2.0f); // dolaczenie do p/w transformacji macierzy skalowania rozmiaru p/n figury
-	{                           // definicja innej figury w srodku sceny jako ostatniej figury - brak zapamietania/resetowania globalnej macierzy (zostanie zrestowania powyzej w proced. wyswietlania)
-		int i;
-		for (i = 0; i < 4; i++)
+	glPushMatrix(); // zapamietanie lokalnej macierzy dla p/w transformacji model-widok
+	{
+		for (int i = 0; i < 6; i++)
 		{
-			glBegin(GL_TRIANGLES);
+			glBegin(GL_QUADS); // definicja gornej sciany szescianu nad srodkiem sceny
 			{
-				glColor3f(1.0f, 0.0f, 0.0f);
-				glVertex3f(-1.0f, -1.0f, 0.0f);
-				glColor3f(0.0f, 1.0f, 0.0f);
-				glVertex3f(1.0f, -1.0f, 0.0f);
-				glColor3f(0.0f, 0.0f, 1.0f);
-				glVertex3f(0.0f, 1.0f, 0.0f);
+				glColor3f(1.0f, 1.0f, 1.0f);
+				glVertex3f(-1.0f, 1.0f, 1.0f);
+				//glColor3f(1.0f, 0.0f, 0.0f);
+				glVertex3f(-1.0f, -1.0f, 1.0f);
+				//glColor3f(0.0f, 1.0f, 0.0f);
+				glVertex3f(1.0f, -1.0f, 1.0f);
+				//glColor3f(0.0f, 0.0f, 1.0f);
+				glVertex3f(1.0f, 1.0f, 1.0f);
 			}
 			glEnd();
-			glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
+			if (i % 2 == 0)
+				glRotatef(90.0f, 1.0f, 0.0f, 0.0f); // pomocniczy obrot p/w sciany wokol OX lub OY tak aby otrzymac pozostale sciany w szescianie
+			else
+				glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 		}
 	}
+	glPopMatrix(); // zresetowanie p/w transformacji model-widok do macierzy lokalnej
 }
 // procedura oddzialywania uzytkownika na widok sceny:
 BOOL Oddzialywanie(double pozm, double pion, double pros, double kret)
