@@ -311,35 +311,35 @@ void Renderowanie(double asp)
 	Modelowanie(); // modelowanie zawartosci graficznej w scenie
 	glFlush();     // natychmiastowe utworzenie obrazu sceny na ekranie lub w buforze i powrot do wyswietlania grafiki
 }
-// pomocnicza procedura z definicja figury graficznej w postaci prostego szescianu o zadanym wlasnym obrocie
-static void DefSzescian_(float obrot)
-{
-	int i;
-	glPushMatrix(); // zapamietanie lokalnej macierzy dla p/w transformacji model-widok
-	{
-		glRotatef(obrot, 1.0f, 0.0f, 1.0f); // dolaczenie do p/w transformacji macierzy obrotu p/n figury
-		for (i = 0; i < 6; i++)
-		{
-			glBegin(GL_QUADS); // definicja gornej sciany szescianu nad srodkiem sceny
-			{
-				glColor3f(1.0f, 1.0f, 1.0f);
-				glVertex3f(-1.0f, 1.0f, 1.0f);
-				glColor3f(1.0f, 0.0f, 0.0f);
-				glVertex3f(-1.0f, -1.0f, 1.0f);
-				glColor3f(0.0f, 1.0f, 0.0f);
-				glVertex3f(1.0f, -1.0f, 1.0f);
-				glColor3f(0.0f, 0.0f, 1.0f);
-				glVertex3f(1.0f, 1.0f, 1.0f);
-			}
-			glEnd();
-			if (i % 2 == 0)
-				glRotatef(90.0f, 1.0f, 0.0f, 0.0f); // pomocniczy obrot p/w sciany wokol OX lub OY tak aby otrzymac pozostale sciany w szescianie
-			else
-				glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-		}
-	}
-	glPopMatrix(); // zresetowanie p/w transformacji model-widok do macierzy lokalnej
-}
+//// pomocnicza procedura z definicja figury graficznej w postaci prostego szescianu o zadanym wlasnym obrocie
+//static void DefSzescian_(float obrot)
+//{
+//	int i;
+//	glPushMatrix(); // zapamietanie lokalnej macierzy dla p/w transformacji model-widok
+//	{
+//		glRotatef(obrot, 1.0f, 0.0f, 1.0f); // dolaczenie do p/w transformacji macierzy obrotu p/n figury
+//		for (i = 0; i < 6; i++)
+//		{
+//			glBegin(GL_QUADS); // definicja gornej sciany szescianu nad srodkiem sceny
+//			{
+//				glColor3f(1.0f, 1.0f, 1.0f);
+//				glVertex3f(-1.0f, 1.0f, 1.0f);
+//				glColor3f(1.0f, 0.0f, 0.0f);
+//				glVertex3f(-1.0f, -1.0f, 1.0f);
+//				glColor3f(0.0f, 1.0f, 0.0f);
+//				glVertex3f(1.0f, -1.0f, 1.0f);
+//				glColor3f(0.0f, 0.0f, 1.0f);
+//				glVertex3f(1.0f, 1.0f, 1.0f);
+//			}
+//			glEnd();
+//			if (i % 2 == 0)
+//				glRotatef(90.0f, 1.0f, 0.0f, 0.0f); // pomocniczy obrot p/w sciany wokol OX lub OY tak aby otrzymac pozostale sciany w szescianie
+//			else
+//				glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+//		}
+//	}
+//	glPopMatrix(); // zresetowanie p/w transformacji model-widok do macierzy lokalnej
+//}
 // procedura podstawowego modelowania graficznego w scenie:
 void Modelowanie(void)
 {
