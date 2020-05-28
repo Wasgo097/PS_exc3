@@ -21,7 +21,14 @@
 #include <gl\glu.h>
 // opis klasy, okna i ekranu:
 char nazwaKlasy[] = "Kostka";
-char tytulOkna[] = "Album na kostce";
+char tytulOkna[] = "Album na kostce"; static void Rozpoczecie(HWND okno);
+static void Zakonczenie(HWND okno);
+static void Dopasowanie(HDC graf, int szer, int wys);
+static void Wyswietlanie(HDC graf, int szer, int wys);
+static void Renderowanie(double asp);
+static void Modelowanie(void);
+static BOOL Oddzialywanie(double pozm, double pion, double pros, double kret);
+static BOOL Obliczenia(void);
 BOOL pelnyEkran = FALSE;
 // deklaracja funkcji okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
@@ -88,7 +95,6 @@ int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 		return (int)komunikat.wParam;
 	}
 }
-
 // deklaracja globalnych danych i procedur sceny do przetwarzania grafiki:
 static HGLRC scena = NULL; // kontekst sceny z grafika GL
 static struct
@@ -99,14 +105,6 @@ static struct
 {
 	float kat1, kat2, kat3;
 } ruch = { 0.0f }; // parametry ruchu w scenie
-static void Rozpoczecie(HWND okno);
-static void Zakonczenie(HWND okno);
-static void Dopasowanie(HDC graf, int szer, int wys);
-static void Wyswietlanie(HDC graf, int szer, int wys);
-static void Renderowanie(double asp);
-static void Modelowanie(void);
-static BOOL Oddzialywanie(double pozm, double pion, double pros, double kret);
-static BOOL Obliczenia(void);
 // funkcja okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam)
 {
@@ -217,13 +215,11 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 	}
 	}
 }
-
 // funkcja programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog)
 {
 	return Obliczenia();
 }
-
 // procedura rozpoczecia przetwarzania grafiki GL w oknie Win32:
 void Rozpoczecie(HWND okno)
 {
