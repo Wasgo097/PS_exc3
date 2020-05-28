@@ -27,9 +27,42 @@
     <ClInclude Include="WindowsProject1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xwglcwA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsProject1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xwglcwA2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw01.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw02.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw03.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw04.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw05.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw06.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw07.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wglcw08.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xwglcwA1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

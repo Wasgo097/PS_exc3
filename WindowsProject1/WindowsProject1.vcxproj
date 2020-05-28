@@ -95,6 +95,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -155,9 +156,20 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WindowsProject1.h" />
+    <ClInclude Include="xwglcwA.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="wglcw01.c" />
+    <ClCompile Include="wglcw02.c" />
+    <ClCompile Include="wglcw03.c" />
+    <ClCompile Include="wglcw04.c" />
+    <ClCompile Include="wglcw05.c" />
+    <ClCompile Include="wglcw06.c" />
+    <ClCompile Include="wglcw07.cc" />
+    <ClCompile Include="wglcw08.cc" />
     <ClCompile Include="WindowsProject1.cpp" />
+    <ClCompile Include="xwglcwA1.cpp" />
+    <ClCompile Include="xwglcwA2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WindowsProject1.rc" />
