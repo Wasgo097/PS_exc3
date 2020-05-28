@@ -294,7 +294,7 @@
 //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // poczatkowe wpisanie koloru tla do bufora z kolorami pikseli na obrazie sceny oraz wyzerowanie bufora glebi
 //    glLoadIdentity();                                   // przypisanie macierzy jednostkowej do p/w transformacji model-widok (zresetowanie stanu transformacji)
 //    /*
-//  Zadanie: zakomentuj p/w operacje, aby zachowac 
+//  Zadanie: zakomentuj p/w operacje, aby zachowac
 //           poprzednia macierz w transformacji model-widok
 //  */
 //    Renderowanie((double)szer / wys); // ponowne renderowanie sceny po odswiezeniu zawartosci okna o biezacym aspekcie geometrycznym
