@@ -100,7 +100,6 @@
 //  return (int)komunikat.wParam;
 // }
 //}
-//
 //// deklaracja globalnych danych i procedur sceny do przetwarzania grafiki:
 //static HGLRC scena = NULL; // kontekst sceny z grafika GL
 //static void Rozpoczecie(HWND okno);
@@ -109,7 +108,6 @@
 //static void Wyswietlanie(HDC graf, int szer, int wys);
 //static void Renderowanie(double asp);
 //static void Modelowanie(void);
-//
 //// funkcja okna do obslugi zdarzen:
 //LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam)
 //{
