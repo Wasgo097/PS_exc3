@@ -17,9 +17,11 @@
 // plik naglowkowy z deklaracjami elementow interfejsu Win32 API:
 #include <windows.h>
 #include <iostream>
+#include <vector>
 // pliki naglowkowe z deklaracjami elementow biblioteki OpenGL:
 #include <gl\gl.h>
 #include <gl\glu.h>
+using namespace std;
 // opis klasy, okna i ekranu:
 char nazwaKlasy[] = "Kostka";
 char tytulOkna[] = "Album na kostce";
@@ -39,11 +41,13 @@ struct zdjecie {
 	int wysokosc;
 	int rozmiar;
 	unsigned char * obraz;
+	zdjecie(int szer=0,int wys=0,int rozm=0,unsigned char * obr=nullptr):szerokosc(szer),wysokosc(wys),rozmiar(rozm),obraz(obr){}
 };
 BOOL pelnyEkran = FALSE;
 //textury programu
 GLuint textury[6];
-zdjecie zdjecia[6];
+//zdjecie zdjecia[6];
+vector<zdjecie> zdjecia(6);
 // deklaracja funkcji okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
 // deklaracja funkcji programu do wykonywania obliczen:
