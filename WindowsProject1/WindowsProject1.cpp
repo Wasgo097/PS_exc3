@@ -26,9 +26,24 @@ char tytulOkna[] = "Album na kostce";
 const char nazwy[6][256] = {
 	"zdjecie1.bmp","zdjecie2.bmp","zdjecie3.bmp","zdjecie4.bmp","zdjecie5.bmp","zdjecie6.bmp"
 };
+static struct
+{
+	double X, Y, Z, A, B, C, U, V, W;
+} widok = { 0.0 }; // parametry widoku sceny
+static struct
+{
+	float kat1, kat2, kat3;
+} ruch = { 0.0f }; // parametry ruchu w scenie
+struct zdjecie {
+	int szerokosc;
+	int wysokosc;
+	int rozmiar;
+	unsigned char * obraz;
+};
 BOOL pelnyEkran = FALSE;
 //textury programu
 GLuint textury[6];
+zdjecie zdjecia[6];
 // deklaracja funkcji okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
 // deklaracja funkcji programu do wykonywania obliczen:
@@ -95,17 +110,8 @@ int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 		return (int)komunikat.wParam;
 	}
 }
-
 // deklaracja globalnych danych i procedur sceny do przetwarzania grafiki:
 static HGLRC scena = NULL; // kontekst sceny z grafika GL
-static struct
-{
-	double X, Y, Z, A, B, C, U, V, W;
-} widok = { 0.0 }; // parametry widoku sceny
-static struct
-{
-	float kat1, kat2, kat3;
-} ruch = { 0.0f }; // parametry ruchu w scenie
 static void Rozpoczecie(HWND okno);
 static void Zakonczenie(HWND okno);
 static void Dopasowanie(HDC graf, int szer, int wys);
@@ -306,36 +312,7 @@ void Renderowanie(double asp){
 	Modelowanie(); // modelowanie zawartosci graficznej w scenie
 	glFlush();     // natychmiastowe utworzenie obrazu sceny na ekranie lub w buforze i powrot do wyswietlania grafiki
 }
-//// pomocnicza procedura z definicja figury graficznej w postaci prostego szescianu o zadanym wlasnym obrocie
-//static void DefSzescian_(float obrot)
-//{
-//	int i;
-//	glPushMatrix(); // zapamietanie lokalnej macierzy dla p/w transformacji model-widok
-//	{
-//		glRotatef(obrot, 1.0f, 0.0f, 1.0f); // dolaczenie do p/w transformacji macierzy obrotu p/n figury
-//		for (i = 0; i < 6; i++)
-//		{
-//			glBegin(GL_QUADS); // definicja gornej sciany szescianu nad srodkiem sceny
-//			{
-//				glColor3f(1.0f, 1.0f, 1.0f);
-//				glVertex3f(-1.0f, 1.0f, 1.0f);
-//				glColor3f(1.0f, 0.0f, 0.0f);
-//				glVertex3f(-1.0f, -1.0f, 1.0f);
-//				glColor3f(0.0f, 1.0f, 0.0f);
-//				glVertex3f(1.0f, -1.0f, 1.0f);
-//				glColor3f(0.0f, 0.0f, 1.0f);
-//				glVertex3f(1.0f, 1.0f, 1.0f);
-//			}
-//			glEnd();
-//			if (i % 2 == 0)
-//				glRotatef(90.0f, 1.0f, 0.0f, 0.0f); // pomocniczy obrot p/w sciany wokol OX lub OY tak aby otrzymac pozostale sciany w szescianie
-//			else
-//				glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-//		}
-//	}
-//	glPopMatrix(); // zresetowanie p/w transformacji model-widok do macierzy lokalnej
-//}
-//// procedura podstawowego modelowania graficznego w scenie:
+// procedura podstawowego modelowania graficznego w scenie:
 unsigned char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar) {
 	int i;
 	FILE* f = fopen(filename, "rb");
