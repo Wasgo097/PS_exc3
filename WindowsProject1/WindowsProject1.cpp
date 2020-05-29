@@ -47,7 +47,7 @@ BOOL pelnyEkran = FALSE;
 //textury programu
 GLuint textury[6];
 //zdjecie zdjecia[6];
-vector<zdjecie> zdjecia(6);
+vector<zdjecie> zdjecia;
 // deklaracja funkcji okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
 // deklaracja funkcji programu do wykonywania obliczen:
@@ -272,6 +272,11 @@ void Rozpoczecie(HWND okno)
 		glEnable(GL_DEPTH_TEST);       // wlaczenie bufora do testowania glebi w renderowaniu sceny 3D
 		glShadeModel(GL_SMOOTH);       // wybranie trybu cieniowania poprzez interpolacje kolorow na powierzchni figury
 	}
+	for (int i = 0; i < 6; i++) {
+		int szerokosc, wysokosc, rozmiar;
+		unsigned char * obraz = readBMP(nazwy[i], szerokosc, wysokosc, rozmiar);
+		zdjecia.push_back(zdjecie(szerokosc, wysokosc, rozmiar, obraz));
+	}
 }
 // procedura zakonczenia przetwarzania grafiki GL w oknie Win32:
 void Zakonczenie(HWND okno){
@@ -281,6 +286,8 @@ void Zakonczenie(HWND okno){
 	scena = NULL;
 	ReleaseDC(okno, grafika); // zwolnienie kontekstu grafiki podanego okna
 	glDeleteTextures(6, textury);
+	for (auto&x : zdjecia)
+		delete[]x.obraz;
 }
 // procedura dopasowanie grafiki GL po zmianie rozmiaru okna:
 void Dopasowanie(HDC graf, int szer, int wys){
@@ -342,17 +349,15 @@ void Modelowanie(void)
 		glGenTextures(6, textury);
 		for (int i = 0; i < 6; i++) {
 			//ładowanie obrazka
-			int szerokosc, wysokosc, rozmiar;
-			unsigned char * obraz = readBMP(nazwy[i], szerokosc, wysokosc, rozmiar);
 			glBindTexture(GL_TEXTURE_2D, textury[i]);
 			gluBuild2DMipmaps(
 				GL_TEXTURE_2D,//wybor textury plaskiej
 				GL_RGB,//paleta rgb
-				szerokosc,
-				wysokosc,
+				zdjecia[i].szerokosc,
+				zdjecia[i].wysokosc,
 				GL_BGR_EXT,
 				GL_UNSIGNED_BYTE,
-				obraz
+				zdjecia[i].obraz
 			);
 		}
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -366,13 +371,10 @@ void Modelowanie(void)
 				glColor3f(1.0f, 1.0f, 1.0f);
 				glVertex3f(-1.0f, 1.0f, 1.0f);
 				glTexCoord2f(1.0, 0.0);
-				//glColor3f(1.0f, 0.0f, 0.0f);
 				glVertex3f(-1.0f, -1.0f, 1.0f);
 				glTexCoord2f(0.0, 1.0);
-				//glColor3f(0.0f, 1.0f, 0.0f);
 				glVertex3f(1.0f, -1.0f, 1.0f);
 				glTexCoord2f(1.0, 1.0);
-				//glColor3f(0.0f, 0.0f, 1.0f);
 				glVertex3f(1.0f, 1.0f, 1.0f);
 			}
 			glEnd();
