@@ -16,17 +16,24 @@
 #define M_2PI (2.0 * M_PI)
 // plik naglowkowy z deklaracjami elementow interfejsu Win32 API:
 #include <windows.h>
+#include <iostream>
 // pliki naglowkowe z deklaracjami elementow biblioteki OpenGL:
 #include <gl\gl.h>
 #include <gl\glu.h>
 // opis klasy, okna i ekranu:
 char nazwaKlasy[] = "Kostka";
 char tytulOkna[] = "Album na kostce";
+const char nazwy[6][256] = {
+	"zdjecie1.bmp","zdjecie2.bmp","zdjecie3.bmp","zdjecie4.bmp","zdjecie5.bmp","zdjecie6.bmp"
+};
 BOOL pelnyEkran = FALSE;
+//textury programu
+GLuint textury[6];
 // deklaracja funkcji okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
 // deklaracja funkcji programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog);
+unsigned char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar);
 // glowny kod programu:
 int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 	WNDCLASS klasa; // klasa okna
@@ -217,13 +224,11 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 	}
 	}
 }
-
 // funkcja programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog)
 {
 	return Obliczenia();
 }
-
 // procedura rozpoczecia przetwarzania grafiki GL w oknie Win32:
 void Rozpoczecie(HWND okno)
 {
@@ -259,28 +264,22 @@ void Rozpoczecie(HWND okno)
 	}
 }
 // procedura zakonczenia przetwarzania grafiki GL w oknie Win32:
-void Zakonczenie(HWND okno)
-{
+void Zakonczenie(HWND okno){
 	HDC grafika = GetDC(okno);     // tymczasowe pobranie kontekstu wyswietlania grafiki w podanym oknie
 	wglMakeCurrent(grafika, NULL); // anulowanie kontekstu sceny w kontekscie grafiki
 	wglDeleteContext(scena);       // usuniecie kontekstu renderowania sceny
 	scena = NULL;
 	ReleaseDC(okno, grafika); // zwolnienie kontekstu grafiki podanego okna
+	glDeleteTextures(6, textury);
 }
-
 // procedura dopasowanie grafiki GL po zmianie rozmiaru okna:
-void Dopasowanie(HDC graf, int szer, int wys)
-{
+void Dopasowanie(HDC graf, int szer, int wys){
 	if (szer <= 0 || wys <= 0)
 		return;
-
 	glViewport(0, 0, szer, wys); // ustawienie portu widokowego bedacego obszarem p/n rzutowania sceny w obrebie okna
-
 	glMatrixMode(GL_PROJECTION); // wyroznienie transformacji rzutowania sceny 3D na plaszczyzne widokowej
 	glLoadIdentity();            // przypisanie macierzy jednostkowej do p/w transformacji
-
 	gluPerspective(60.0, (double)szer / wys, 1.0, 1000.0); // przypisanie macierzy perspektywy do p/w transformacji
-
 	glMatrixMode(GL_MODELVIEW); // wyroznienie transformacji modelu i/lub widoku w scenie 3D
 }
 // procedura wyswietlania grafiki GL w oknie:
@@ -291,16 +290,12 @@ void Wyswietlanie(HDC graf, int szer, int wys)
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);               // ustawienie koloru RGBA dla tla sceny
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // poczatkowe wpisanie koloru tla do bufora z kolorami pikseli na obrazie sceny oraz wyzerowanie bufora glebi
 	glLoadIdentity();                                   // przypisanie macierzy jednostkowej do p/w transformacji model-widok (zresetowanie stanu transformacji)
-	/*
-  Zadanie: zakomentuj p/w operacje, aby zachowac
-		   poprzednia macierz w transformacji model-widok
-  */
+	//Zadanie: zakomentuj p/w operacje, aby zachowacpoprzednia macierz w transformacji model-widok
 	Renderowanie((double)szer / wys); // ponowne renderowanie sceny po odswiezeniu zawartosci okna o biezacym aspekcie geometrycznym
 	SwapBuffers(graf);                // po utworzeniu obrazu sceny na tylnim buforze zamiana buforow obrazu miejscami
 }
 // procedura odtworzenia modelu sceny w postaci grafiki GL:
-void Renderowanie(double asp)
-{
+void Renderowanie(double asp){
 	if (asp > 1)
 		asp = 1;
 	gluLookAt(                                       // przypisanie macierzy obserwacji do p/w transformacji
@@ -340,21 +335,62 @@ void Renderowanie(double asp)
 //	}
 //	glPopMatrix(); // zresetowanie p/w transformacji model-widok do macierzy lokalnej
 //}
-// procedura podstawowego modelowania graficznego w scenie:
+//// procedura podstawowego modelowania graficznego w scenie:
+unsigned char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar) {
+	int i;
+	FILE* f = fopen(filename, "rb");
+	unsigned char info[54];
+	// read the 54-byte header
+	fread(info, sizeof(unsigned char), 54, f);
+	// extract image height and width from header
+	szerokosc = *(int*)&info[18];
+	wysokosc = *(int*)&info[22];
+	// allocate 3 bytes per pixel
+	rozmiar = 3 * szerokosc*wysokosc;
+	unsigned char* data = new unsigned char[rozmiar];
+	// read the rest of the data at once
+	fread(data, sizeof(unsigned char), rozmiar, f);
+	fclose(f);
+	return data;
+}
 void Modelowanie(void)
 {
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix(); // zapamietanie lokalnej macierzy dla p/w transformacji model-widok
 	{
+		glGenTextures(6, textury);
+		for (int i = 0; i < 6; i++) {
+			//ładowanie obrazka
+			int szerokosc, wysokosc, rozmiar;
+			unsigned char * obraz = readBMP(nazwy[i], szerokosc, wysokosc, rozmiar);
+			glBindTexture(GL_TEXTURE_2D, textury[i]);
+			gluBuild2DMipmaps(
+				GL_TEXTURE_2D,//wybor textury plaskiej
+				GL_RGB,//paleta rgb
+				szerokosc,
+				wysokosc,
+				GL_BGR_EXT,
+				GL_UNSIGNED_BYTE,
+				obraz
+			);
+		}
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		for (int i = 0; i < 6; i++)
 		{
+			glBindTexture(GL_TEXTURE_2D, textury[i]);
 			glBegin(GL_QUADS); // definicja gornej sciany szescianu nad srodkiem sceny
 			{
+				glTexCoord2f(0.0, 0.0);
 				glColor3f(1.0f, 1.0f, 1.0f);
 				glVertex3f(-1.0f, 1.0f, 1.0f);
+				glTexCoord2f(1.0, 0.0);
 				//glColor3f(1.0f, 0.0f, 0.0f);
 				glVertex3f(-1.0f, -1.0f, 1.0f);
+				glTexCoord2f(0.0, 1.0);
 				//glColor3f(0.0f, 1.0f, 0.0f);
 				glVertex3f(1.0f, -1.0f, 1.0f);
+				glTexCoord2f(1.0, 1.0);
 				//glColor3f(0.0f, 0.0f, 1.0f);
 				glVertex3f(1.0f, 1.0f, 1.0f);
 			}
@@ -396,8 +432,7 @@ BOOL Oddzialywanie(double pozm, double pion, double pros, double kret)
 	return TRUE; // wyswietlenie grafiki GL w oknie
 }
 // procedura iteracyjnych obliczen dla modelu graficznego:
-BOOL Obliczenia(void)
-{
+BOOL Obliczenia(void){
 	ruch.kat1 += 1.0f; // nastepne katy obrotu figur w modelu sceny
 	ruch.kat2 -= 2.0f;
 	ruch.kat3 += 3.0f;

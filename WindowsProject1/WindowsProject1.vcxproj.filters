@@ -78,5 +78,23 @@
     <Image Include="WindowsProject1.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="zdjecie1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zdjecie2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zdjecie3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zdjecie4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zdjecie5.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zdjecie6.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
