@@ -178,6 +178,12 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="WindowsProject1.ico" />
+    <Image Include="zdjecie1.bmp" />
+    <Image Include="zdjecie2.bmp" />
+    <Image Include="zdjecie3.bmp" />
+    <Image Include="zdjecie4.bmp" />
+    <Image Include="zdjecie5.bmp" />
+    <Image Include="zdjecie6.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
