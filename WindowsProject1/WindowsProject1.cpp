@@ -226,9 +226,8 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 		int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
 		int x = 0, y = 0, z = 0;
 		//lewy alt
-		if (klawisz == VK_LMENU) {
+		if (klawisz == VK_LMENU)
 			obrot = !obrot;
-		}
 		//x
 		else if (klawisz == VK_NUMPAD7) {
 			ostatni_przycisk = klawisz;
@@ -268,9 +267,31 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 	}
 	default: // domyslna obsluga komunikatu
 	{
+		if (obrot) {
+			int x = 0, y = 0, z = 0;
+			//x
+			if (ostatni_przycisk == VK_NUMPAD7) 
+				x = 5;
+			else if (ostatni_przycisk == VK_NUMPAD4) 
+				x = -5;
+			//y
+			else if (ostatni_przycisk == VK_NUMPAD8) 
+				y = 5;
+			else if (ostatni_przycisk == VK_NUMPAD5) 
+				y = -5;
+			//z
+			else if (ostatni_przycisk == VK_NUMPAD9) 
+				z = 5;
+			else if (ostatni_przycisk == VK_NUMPAD6) 
+				z = -5;
+			BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0, 0.01 * z);
+			if (zmiana)
+				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
+		}
 		return DefWindowProc(okno, komunikat, wParam, lParam);
 	}
 	}
+
 }
 // funkcja programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog)
