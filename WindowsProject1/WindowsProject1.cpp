@@ -25,6 +25,8 @@ using namespace std;
 // opis klasy, okna i ekranu:
 char nazwaKlasy[] = "Kostka";
 char tytulOkna[] = "Album na kostce";
+bool obrot = false;
+int ostatni_przycisk = (int)VK_NUMPAD7;
 const char nazwy[6][256] = {
 	"zdjecie1.bmp","zdjecie2.bmp","zdjecie3.bmp","zdjecie4.bmp","zdjecie5.bmp","zdjecie6.bmp"
 };
@@ -89,7 +91,6 @@ int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 	}
 	ShowWindow(okno, trybOkna);
 	UpdateWindow(okno);
-
 	// petla glowna programu do obslugi zdarzen oraz wykonywania obliczen:
 	{
 		MSG komunikat; // komunikat dot. zdarzenia w systemie okienkowym
@@ -182,45 +183,82 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 		}
 		return 0;
 	}
-	case WM_MOUSEMOVE: // przesuwanie myszki w oknie
-	{
-		POINT kurs = { LOWORD(lParam), HIWORD(lParam) }; // loklane polozenie kursora myszki
-		int szer, wys;                                 // rozmiary obszaru okna
-		{
-			RECT obszar;
-			GetClientRect(okno, &obszar);
-			szer = obszar.right;
-			wys = obszar.bottom;
-		}
-		if (szer > 0 && wys > 0 && kurs.x >= 0 && kurs.x < szer && kurs.y >= 0 && kurs.y < wys)
-		{
-			BOOL zmiana = Oddzialywanie(1.0 * (kurs.x - kursX) / szer, 1.0 * (kurs.y - kursY) / wys, 0.0, 0.0);
-			if (zmiana)
-				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
-		}
-		kursX = kurs.x;
-		kursY = kurs.y; // poprzednie polozenie kursora
-		return 0;
-	}
+	//case WM_MOUSEMOVE: // przesuwanie myszki w oknie
+	//{
+	//	POINT kurs = { LOWORD(lParam), HIWORD(lParam) }; // loklane polozenie kursora myszki
+	//	int szer, wys;                                 // rozmiary obszaru okna
+	//	{
+	//		RECT obszar;
+	//		GetClientRect(okno, &obszar);
+	//		szer = obszar.right;
+	//		wys = obszar.bottom;
+	//	}
+	//	if (szer > 0 && wys > 0 && kurs.x >= 0 && kurs.x < szer && kurs.y >= 0 && kurs.y < wys)
+	//	{
+	//		BOOL zmiana = Oddzialywanie(1.0 * (kurs.x - kursX) / szer, 1.0 * (kurs.y - kursY) / wys, 0.0, 0.0);
+	//		if (zmiana)
+	//			InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
+	//	}
+	//	kursX = kurs.x;
+	//	kursY = kurs.y; // poprzednie polozenie kursora
+	//	return 0;
+	//}
 	case WM_KEYDOWN: // nacisniecie klawiatury w oknie
 	{
+		//int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
+		//int wert = 0;                // zwrot klawisza ze strzalka wertykalna
+		//int horz = 0;                // zwrot klawisza ze strzalka horyzontalna
+		//if (klawisz == VK_UP)
+		//	wert = +10;
+		//else if (klawisz == VK_DOWN)
+		//	wert = -10;
+		//else if (klawisz == VK_RIGHT)
+		//	horz = +10;
+		//else if (klawisz == VK_LEFT)
+		//	horz = -10;
+		//{
+		//	BOOL zmiana = Oddzialywanie(0.0, 0.0, 0.1 * wert, 0.01 * horz);
+		//	if (zmiana)
+		//		InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
+		//}
+		//return 0;
+
 		int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
-		int wert = 0;                // zwrot klawisza ze strzalka wertykalna
-		int horz = 0;                // zwrot klawisza ze strzalka horyzontalna
-		if (klawisz == VK_UP)
-			wert = +1;
-		else if (klawisz == VK_DOWN)
-			wert = -1;
-		else if (klawisz == VK_RIGHT)
-			horz = +1;
-		else if (klawisz == VK_LEFT)
-			horz = -1;
-		{
-			BOOL zmiana = Oddzialywanie(0.0, 0.0, 0.1 * wert, 0.01 * horz);
-			if (zmiana)
-				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
+		int x = 0, y = 0, z = 0;
+		//lewy alt
+		if (klawisz == VK_LMENU) {
+			obrot = !obrot;
 		}
-		return 0;
+		//x
+		else if (klawisz == VK_NUMPAD7) {
+			ostatni_przycisk = klawisz;
+			x = 5;
+		}
+		else if (klawisz == VK_NUMPAD4) {
+			ostatni_przycisk = klawisz;
+			x = -5;
+		}
+		//y
+		else if (klawisz == VK_NUMPAD8) {
+			ostatni_przycisk = klawisz;
+			y = 5;
+		}
+		else if (klawisz == VK_NUMPAD5) {
+			ostatni_przycisk = klawisz;
+			y = -5;
+		}
+		//z
+		else if (klawisz == VK_NUMPAD9) {
+			ostatni_przycisk = klawisz;
+			z = 5;
+		}
+		else if (klawisz == VK_NUMPAD6) {
+			ostatni_przycisk = klawisz;
+			z = -5;
+		}
+		BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0, 0.01 * z);
+		if (zmiana)
+			InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
 	}
 	case WM_CHAR: // wprowadzenie znaku do okna
 	{
@@ -378,7 +416,6 @@ void Modelowanie(void)
 
 				glTexCoord2f(0.0, 1.0);
 				glVertex3f(-1.0f, 1.0f, 1.0f);
-
 			}
 			glEnd();
 			if (i % 2 == 0)
