@@ -40,8 +40,8 @@ struct zdjecie {
 	int szerokosc;
 	int wysokosc;
 	int rozmiar;
-	unsigned char * obraz;
-	zdjecie(int szer=0,int wys=0,int rozm=0,unsigned char * obr=nullptr):szerokosc(szer),wysokosc(wys),rozmiar(rozm),obraz(obr){}
+	char * obraz;
+	zdjecie(int szer=0,int wys=0,int rozm=0,char * obr=nullptr):szerokosc(szer),wysokosc(wys),rozmiar(rozm),obraz(obr){}
 };
 BOOL pelnyEkran = FALSE;
 //textury programu
@@ -52,7 +52,7 @@ vector<zdjecie> zdjecia;
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
 // deklaracja funkcji programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog);
-unsigned char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar);
+char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar);
 // glowny kod programu:
 int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 	WNDCLASS klasa; // klasa okna
@@ -274,7 +274,7 @@ void Rozpoczecie(HWND okno)
 	}
 	for (int i = 0; i < 6; i++) {
 		int szerokosc, wysokosc, rozmiar;
-		unsigned char * obraz = readBMP(nazwy[i], szerokosc, wysokosc, rozmiar);
+		char * obraz = readBMP(nazwy[i], szerokosc, wysokosc, rozmiar);
 		zdjecia.push_back(zdjecie(szerokosc, wysokosc, rozmiar, obraz));
 	}
 }
@@ -324,20 +324,20 @@ void Renderowanie(double asp){
 	glFlush();     // natychmiastowe utworzenie obrazu sceny na ekranie lub w buforze i powrot do wyswietlania grafiki
 }
 // procedura podstawowego modelowania graficznego w scenie:
-unsigned char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar) {
+char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar) {
 	int i;
 	FILE* f = fopen(filename, "rb");
-	unsigned char info[54];
+	byte info[54];
 	// read the 54-byte header
-	fread(info, sizeof(unsigned char), 54, f);
+	fread(info, sizeof(byte), 54, f);
 	// extract image height and width from header
 	szerokosc = *(int*)&info[18];
 	wysokosc = *(int*)&info[22];
 	// allocate 3 bytes per pixel
 	rozmiar = 3 * szerokosc*wysokosc;
-	unsigned char* data = new unsigned char[rozmiar];
+	char* data = new  char[rozmiar];
 	// read the rest of the data at once
-	fread(data, sizeof(unsigned char), rozmiar, f);
+	fread(data, sizeof(char), rozmiar, f);
 	fclose(f);
 	return data;
 }
@@ -368,14 +368,17 @@ void Modelowanie(void)
 			glBegin(GL_QUADS); // definicja gornej sciany szescianu nad srodkiem sceny
 			{
 				glTexCoord2f(0.0, 0.0);
-				glColor3f(1.0f, 1.0f, 1.0f);
-				glVertex3f(-1.0f, 1.0f, 1.0f);
-				glTexCoord2f(1.0, 0.0);
 				glVertex3f(-1.0f, -1.0f, 1.0f);
-				glTexCoord2f(0.0, 1.0);
+
+				glTexCoord2f(1.0, 0.0);
 				glVertex3f(1.0f, -1.0f, 1.0f);
+
 				glTexCoord2f(1.0, 1.0);
 				glVertex3f(1.0f, 1.0f, 1.0f);
+
+				glTexCoord2f(0.0, 1.0);
+				glVertex3f(-1.0f, 1.0f, 1.0f);
+
 			}
 			glEnd();
 			if (i % 2 == 0)
