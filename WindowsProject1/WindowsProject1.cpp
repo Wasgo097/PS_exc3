@@ -229,6 +229,7 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 		if (klawisz == VK_LMENU) {
 			obrot = !obrot;
 		}
+		//x
 		else if (klawisz == VK_NUMPAD7) {
 			ostatni_przycisk = klawisz;
 			x = 5;
@@ -237,6 +238,7 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 			ostatni_przycisk = klawisz;
 			x = -5;
 		}
+		//y
 		else if (klawisz == VK_NUMPAD8) {
 			ostatni_przycisk = klawisz;
 			y = 5;
@@ -245,6 +247,7 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 			ostatni_przycisk = klawisz;
 			y = -5;
 		}
+		//z
 		else if (klawisz == VK_NUMPAD9) {
 			ostatni_przycisk = klawisz;
 			z = 5;
@@ -253,7 +256,9 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 			ostatni_przycisk = klawisz;
 			z = -5;
 		}
-		
+		BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0, 0.01 * z);
+		if (zmiana)
+			InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
 	}
 	case WM_CHAR: // wprowadzenie znaku do okna
 	{
@@ -411,7 +416,6 @@ void Modelowanie(void)
 
 				glTexCoord2f(0.0, 1.0);
 				glVertex3f(-1.0f, 1.0f, 1.0f);
-
 			}
 			glEnd();
 			if (i % 2 == 0)
