@@ -25,6 +25,8 @@ using namespace std;
 // opis klasy, okna i ekranu:
 char nazwaKlasy[] = "Kostka";
 char tytulOkna[] = "Album na kostce";
+bool obrot = false;
+int ostatni_przycisk = (int)VK_NUMPAD7;
 const char nazwy[6][256] = {
 	"zdjecie1.bmp","zdjecie2.bmp","zdjecie3.bmp","zdjecie4.bmp","zdjecie5.bmp","zdjecie6.bmp"
 };
@@ -203,23 +205,55 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 	//}
 	case WM_KEYDOWN: // nacisniecie klawiatury w oknie
 	{
+		//int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
+		//int wert = 0;                // zwrot klawisza ze strzalka wertykalna
+		//int horz = 0;                // zwrot klawisza ze strzalka horyzontalna
+		//if (klawisz == VK_UP)
+		//	wert = +10;
+		//else if (klawisz == VK_DOWN)
+		//	wert = -10;
+		//else if (klawisz == VK_RIGHT)
+		//	horz = +10;
+		//else if (klawisz == VK_LEFT)
+		//	horz = -10;
+		//{
+		//	BOOL zmiana = Oddzialywanie(0.0, 0.0, 0.1 * wert, 0.01 * horz);
+		//	if (zmiana)
+		//		InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
+		//}
+		//return 0;
+
 		int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
-		int wert = 0;                // zwrot klawisza ze strzalka wertykalna
-		int horz = 0;                // zwrot klawisza ze strzalka horyzontalna
-		if (klawisz == VK_UP)
-			wert = +10;
-		else if (klawisz == VK_DOWN)
-			wert = -10;
-		else if (klawisz == VK_RIGHT)
-			horz = +10;
-		else if (klawisz == VK_LEFT)
-			horz = -10;
-		{
-			BOOL zmiana = Oddzialywanie(0.0, 0.0, 0.1 * wert, 0.01 * horz);
-			if (zmiana)
-				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
+		int x = 0, y = 0, z = 0;
+		//lewy alt
+		if (klawisz == VK_LMENU) {
+			obrot = !obrot;
 		}
-		return 0;
+		else if (klawisz == VK_NUMPAD7) {
+			ostatni_przycisk = klawisz;
+			x = 5;
+		}
+		else if (klawisz == VK_NUMPAD4) {
+			ostatni_przycisk = klawisz;
+			x = -5;
+		}
+		else if (klawisz == VK_NUMPAD8) {
+			ostatni_przycisk = klawisz;
+			y = 5;
+		}
+		else if (klawisz == VK_NUMPAD5) {
+			ostatni_przycisk = klawisz;
+			y = -5;
+		}
+		else if (klawisz == VK_NUMPAD9) {
+			ostatni_przycisk = klawisz;
+			z = 5;
+		}
+		else if (klawisz == VK_NUMPAD6) {
+			ostatni_przycisk = klawisz;
+			z = -5;
+		}
+		
 	}
 	case WM_CHAR: // wprowadzenie znaku do okna
 	{
