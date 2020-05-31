@@ -105,12 +105,12 @@ int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 				TranslateMessage(&komunikat);
 				DispatchMessage(&komunikat);
 			}
-			else // obliczenia programu
-			{
-				BOOL zmiana = funProg(prog);
-				if (zmiana)
-					InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna glownego
-			}
+			//else // obliczenia programu
+			//{
+			//	BOOL zmiana = funProg(prog);
+			//	if (zmiana)
+			//		InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna glownego
+			//}
 			AutoRotate(okno);
 		}
 
@@ -130,9 +130,10 @@ static BOOL Oddzialywanie(double pozm, double pion, double pros, double kret);
 static BOOL Obliczenia(void);
 
 void AutoRotate(HWND hwnd) {
-	BOOL zmiana = Oddzialywanie(0.01 * autoX, 0.01 * autoY, 0, 0.01 * autoZ);
-	if (zmiana)
-		InvalidateRect(hwnd, NULL, FALSE); // odswiezenie zawartosci okna
+	if (obrot) {
+		BOOL zmiana = Oddzialywanie(0.01 * autoX, 0.01 * autoY, 0, 0.01 * autoZ);
+		if (zmiana) InvalidateRect(hwnd, NULL, FALSE); // odswiezenie zawartosci okna
+	}
 }
 
 
