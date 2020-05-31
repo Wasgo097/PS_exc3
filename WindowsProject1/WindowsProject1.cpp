@@ -26,7 +26,7 @@ using namespace std;
 char nazwaKlasy[] = "Kostka";
 char tytulOkna[] = "Album na kostce";
 bool obrot = false;
-int ostatni_przycisk = (int)VK_NUMPAD7;
+int ostatni_przycisk = VK_NUMPAD7;
 const char nazwy[6][256] = {
 	"zdjecie1.bmp","zdjecie2.bmp","zdjecie3.bmp","zdjecie4.bmp","zdjecie5.bmp","zdjecie6.bmp"
 };
@@ -224,7 +224,7 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 		//return 0;
 
 		int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
-		int x = 0, y = 0, z = 0;
+		int x = 0, y = 0, z = 0, zoom = 0;;
 		//lewy alt
 		if (klawisz == VK_LMENU)
 			obrot = !obrot;
@@ -255,7 +255,11 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 			ostatni_przycisk = klawisz;
 			z = -5;
 		}
-		BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0, 0.01 * z);
+		else if (klawisz == VK_UP)
+			zoom = -10;
+		else if (klawisz == VK_DOWN)
+			zoom = +10;
+		BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0.01*zoom, 0.01 * z);
 		if (zmiana)
 			InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
 	}
@@ -284,14 +288,13 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 				z = 5;
 			else if (ostatni_przycisk == VK_NUMPAD6) 
 				z = -5;
-			BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0, 0.01 * z);
+			BOOL zmiana = Oddzialywanie(0.001*x, 0.001*y, 0, 0.01 * z);
 			if (zmiana)
 				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
 		}
 		return DefWindowProc(okno, komunikat, wParam, lParam);
 	}
 	}
-
 }
 // funkcja programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog)
