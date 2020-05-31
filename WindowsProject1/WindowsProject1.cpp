@@ -46,6 +46,7 @@ struct zdjecie {
 	zdjecie(int szer=0,int wys=0,int rozm=0,char * obr=nullptr):szerokosc(szer),wysokosc(wys),rozmiar(rozm),obraz(obr){}
 };
 BOOL pelnyEkran = FALSE;
+int autoX = 0, autoY = 0, autoZ = 0;
 //textury programu
 GLuint textury[6];
 //zdjecie zdjecia[6];
@@ -54,6 +55,7 @@ vector<zdjecie> zdjecia;
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam);
 // deklaracja funkcji programu do wykonywania obliczen:
 BOOL funProg(HINSTANCE prog);
+void AutoRotate(HWND hwnd);
 char* readBMP(const char* filename, int & szerokosc, int &wysokosc, int & rozmiar);
 // glowny kod programu:
 int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
@@ -109,6 +111,7 @@ int WINAPI WinMain(HINSTANCE prog, HINSTANCE _, LPSTR __, int trybOkna) {
 				if (zmiana)
 					InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna glownego
 			}
+			AutoRotate(okno);
 		}
 
 		// zakonczenie programu:
@@ -125,9 +128,30 @@ static void Renderowanie(double asp);
 static void Modelowanie(void);
 static BOOL Oddzialywanie(double pozm, double pion, double pros, double kret);
 static BOOL Obliczenia(void);
+
+void AutoRotate(HWND hwnd) {
+	BOOL zmiana = Oddzialywanie(0.01 * autoX, 0.01 * autoY, 0, 0.01 * autoZ);
+	if (zmiana)
+		InvalidateRect(hwnd, NULL, FALSE); // odswiezenie zawartosci okna
+}
+
+
 // funkcja okna do obslugi zdarzen:
 LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam)
 {
+	if (obrot) {
+		int klawisz = (int)(wParam);
+
+		//x
+		if (klawisz == VK_NUMPAD7) autoX += 1;
+		else if (klawisz == VK_NUMPAD4) autoX -=1 ;
+		//y
+		else if (klawisz == VK_NUMPAD8) autoY +=1;
+		else if (klawisz == VK_NUMPAD5) autoY -=1;
+		//z
+		else if (klawisz == VK_NUMPAD9) autoZ +=1;
+		else if (klawisz == VK_NUMPAD6) autoZ -=1;
+	}
 	static int kursX = -1, kursY = -1; // biezace polozenie kursora myszki
 	switch (komunikat)
 	{
@@ -225,43 +249,46 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 
 		int klawisz = (int)(wParam); // kod biezacego klawisza klawiatury
 		int x = 0, y = 0, z = 0, zoom = 0;;
-		//lewy alt
-		if (klawisz == VK_LMENU)
+		//auto obrot
+		if (klawisz == VK_NUMPAD0)
 			obrot = !obrot;
-		//x
-		else if (klawisz == VK_NUMPAD7) {
-			ostatni_przycisk = klawisz;
-			x = 5;
+		if (!obrot) {
+			//x
+			if (klawisz == VK_NUMPAD7) {
+				ostatni_przycisk = klawisz;
+				x = 5;
+			}
+			else if (klawisz == VK_NUMPAD4) {
+				ostatni_przycisk = klawisz;
+				x = -5;
+			}
+			//y
+			else if (klawisz == VK_NUMPAD8) {
+				ostatni_przycisk = klawisz;
+				y = 5;
+			}
+			else if (klawisz == VK_NUMPAD5) {
+				ostatni_przycisk = klawisz;
+				y = -5;
+			}
+			//z
+			else if (klawisz == VK_NUMPAD9) {
+				ostatni_przycisk = klawisz;
+				z = 5;
+			}
+			else if (klawisz == VK_NUMPAD6) {
+				ostatni_przycisk = klawisz;
+				z = -5;
+			}
+
+			else if (klawisz == VK_UP)
+				zoom = -10;
+			else if (klawisz == VK_DOWN)
+				zoom = +10;
+			BOOL zmiana = Oddzialywanie(0.01 * x, 0.01 * y, 0.01 * zoom, 0.01 * z);
+			if (zmiana)
+				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
 		}
-		else if (klawisz == VK_NUMPAD4) {
-			ostatni_przycisk = klawisz;
-			x = -5;
-		}
-		//y
-		else if (klawisz == VK_NUMPAD8) {
-			ostatni_przycisk = klawisz;
-			y = 5;
-		}
-		else if (klawisz == VK_NUMPAD5) {
-			ostatni_przycisk = klawisz;
-			y = -5;
-		}
-		//z
-		else if (klawisz == VK_NUMPAD9) {
-			ostatni_przycisk = klawisz;
-			z = 5;
-		}
-		else if (klawisz == VK_NUMPAD6) {
-			ostatni_przycisk = klawisz;
-			z = -5;
-		}
-		else if (klawisz == VK_UP)
-			zoom = -10;
-		else if (klawisz == VK_DOWN)
-			zoom = +10;
-		BOOL zmiana = Oddzialywanie(0.01*x, 0.01*y, 0.01*zoom, 0.01 * z);
-		if (zmiana)
-			InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
 	}
 	case WM_CHAR: // wprowadzenie znaku do okna
 	{
@@ -271,27 +298,7 @@ LRESULT CALLBACK funOkna(HWND okno, UINT komunikat, WPARAM wParam, LPARAM lParam
 	}
 	default: // domyslna obsluga komunikatu
 	{
-		if (obrot) {
-			int x = 0, y = 0, z = 0;
-			//x
-			if (ostatni_przycisk == VK_NUMPAD7) 
-				x = 5;
-			else if (ostatni_przycisk == VK_NUMPAD4) 
-				x = -5;
-			//y
-			else if (ostatni_przycisk == VK_NUMPAD8) 
-				y = 5;
-			else if (ostatni_przycisk == VK_NUMPAD5) 
-				y = -5;
-			//z
-			else if (ostatni_przycisk == VK_NUMPAD9) 
-				z = 5;
-			else if (ostatni_przycisk == VK_NUMPAD6) 
-				z = -5;
-			BOOL zmiana = Oddzialywanie(0.001*x, 0.001*y, 0, 0.01 * z);
-			if (zmiana)
-				InvalidateRect(okno, NULL, FALSE); // odswiezenie zawartosci okna
-		}
+
 		return DefWindowProc(okno, komunikat, wParam, lParam);
 	}
 	}
@@ -483,6 +490,6 @@ BOOL Obliczenia(void){
 	ruch.kat1 += 1.0f; // nastepne katy obrotu figur w modelu sceny
 	ruch.kat2 -= 2.0f;
 	ruch.kat3 += 3.0f;
-	Sleep(10);   // wstrzymanie programu przez podana liczbe milisekund
+	//Sleep(10);   // wstrzymanie programu przez podana liczbe milisekund
 	return TRUE; // wyswietlenie grafiki GL w oknie
 }
